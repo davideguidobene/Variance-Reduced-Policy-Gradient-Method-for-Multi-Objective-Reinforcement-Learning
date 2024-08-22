@@ -82,8 +82,8 @@ def save_data(total_rewards, epoch=None, id=None):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 0:
+    if len(sys.argv) == 1:
         main()
     else:
-        for M in sys.argv:
+        for M in sys.argv[1:]:
             main(int(M))
