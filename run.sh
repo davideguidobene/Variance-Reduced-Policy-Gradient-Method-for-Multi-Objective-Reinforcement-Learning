@@ -9,4 +9,4 @@
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate forl_env
 
-python -u main.py
+python -u main.py 64 32 16
