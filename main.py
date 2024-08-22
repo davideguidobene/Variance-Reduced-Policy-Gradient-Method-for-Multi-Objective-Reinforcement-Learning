@@ -6,6 +6,7 @@ import numpy as np
 from tqdm import tqdm
 import concurrent.futures
 import os
+import sys
 
 def train(algorithm, id):
     total_rewards = []
@@ -23,10 +24,10 @@ def train(algorithm, id):
 
     return total_rewards
 
-def create_and_train(id): 
+def create_and_train(id, M): 
     seed = (8+id) * 10**7
 
-    Config.initalize_env()
+    Config.initalize_env(M)
 
     alg_name = Config.alg_name
     if alg_name == 'MOTSIVRPG':
@@ -36,13 +37,13 @@ def create_and_train(id):
 
     return train(algorithm, id)
 
-def main():
+def main(M):
 
-    Config.initalize_env()
+    Config.initalize_env(M)
 
     if Config.parallel:      
         with concurrent.futures.ProcessPoolExecutor() as executor: 
-            total_rewards = [executor.submit(create_and_train, id) for id in range(Config.num_runs)]
+            total_rewards = [executor.submit(create_and_train, id, M) for id in range(Config.num_runs)]
             total_rewards = [el.result() for el in total_rewards]
     else:
         for id in range(Config.num_runs):
@@ -81,4 +82,8 @@ def save_data(total_rewards, epoch=None, id=None):
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 0:
+        main()
+    else:
+        for M in sys.argv:
+            main(int(M))

@@ -56,10 +56,10 @@ class Config:
     debug = False
 
     # Server Queues Parameters
-    M = 8 # choose from 6, 8, 12, 16, 32, 64
+    M = 8 # choose from 6, 8, 12, 16, 32, 64. If you pass the M parameters directly when calling python main.py M, this will be ignored.
     H = 500 # Truncated Horizon
 
-    def initalize_env():
+    def initalize_env(M=None):
         # Single-objective
         if Config.environment in SO_ENVS:
             Config.env_name = Config.environment
@@ -76,11 +76,12 @@ class Config:
             else:
                 Config.env_name = 'queue'
 
+                M = Config.M if M is None else M
                 Ms = [6, 8, 12, 16, 32, 64]
-                i = Ms.index(Config.M)
+                i = Ms.index(M)
                 initial_probs = [0.05, 0.0125, 0.0115, 0.005, 0.00175, 0.00053]
                 ds = [0.033, 0.025, 0.01, 0.006, 0.0015, 0.00038]
-                ars = [initial_probs[i] + m * ds[i] for m in range(Config.M)]
+                ars = [initial_probs[i] + m * ds[i] for m in range(M)]
 
                 Config.env = get_env(max_queue_len=Config.H, H=Config.H, arrival_rates=ars)
                 Config.env_config = Config.Queue
